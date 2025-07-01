@@ -5,6 +5,7 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Filter from "@/components/Filter";
 import Link from "next/link";
 import Image from "next/image";
+import TextReducer from "./TxtReducer";
 
 interface Product {
   id: number;
@@ -57,7 +58,11 @@ export default function Products() {
               className="border p-4 rounded-lg shadow hover:shadow-lg transition"
             >
               <h2 className="text-xl font-semibold mb-2">{product.title}</h2>
-              <p className="text-gray-600 mb-1">{product.description}</p>
+              <p className="text-gray-600 mb-1">
+                <TextReducer>
+                  {product.description}
+                </TextReducer>
+              </p>
               <p className="text-sm text-gray-500 mb-2">
                 Category: {product.category}
               </p>

@@ -63,7 +63,7 @@ export default function NavbarLink({ session }) {
               <Image
                 className="rounded-full"
                 src={session.user.image}
-                al t={session.user.name || "Profile"}
+                alt={session.user.name || "Profile"}
                 width={50}
                 height={50}
               />
