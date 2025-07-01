@@ -1,6 +1,10 @@
 import Image from "next/image";
-import NavbarLink from './NavbarLink'
-export default function Navbar() {
+import NavbarLink from './NavbarLink';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+export default async function Navbar() {
+    const session = await getServerSession(authOptions);
+  console.log("Session in Navbar:", session);
   
   return (
     <nav className="flex items-center justify-between p-4 bg-gray-800 text-white">
@@ -13,7 +17,7 @@ export default function Navbar() {
         />
       </div>
       <ul className="flex space-x-4">
-        <NavbarLink />
+        <NavbarLink  session={session} />
       </ul>
     </nav>
   );

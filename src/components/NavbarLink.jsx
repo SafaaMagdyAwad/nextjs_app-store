@@ -3,8 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
-export default function NavbarLink() {
+export default function NavbarLink({ session }) {
   const navbarItems = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
@@ -13,8 +14,8 @@ export default function NavbarLink() {
       href: "#",
       subItems: [
         { name: "Furniture", href: "/categories/furniture" },
-        { name: "Smartphones", href: "/categories/smartphones" }
-      ]
+        { name: "Smartphones", href: "/categories/smartphones" },
+      ],
     },
   ];
 
@@ -49,6 +50,35 @@ export default function NavbarLink() {
           )}
         </li>
       ))}
+      {session?.user ? (
+        <>
+         <li>
+          <Link href="/cart">cart</Link>
+          </li> 
+          <li>
+          <Link href="/api/auth/signout">Logout</Link>
+          </li>
+          <li>
+            <Link href="/profile" className="hover:underline">
+              <Image
+                className="rounded-full"
+                src={session.user.image}
+                al t={session.user.name || "Profile"}
+                width={50}
+                height={50}
+              />
+            </Link>
+          </li>
+       
+        
+        </>
+      ) : (
+        <li>
+          <Link href="api/auth/signin" className="hover:underline">
+            Login
+          </Link>
+        </li>
+      )}
     </ul>
   );
 }

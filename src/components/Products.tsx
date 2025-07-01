@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Filter from "@/components/Filter";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Product {
   id: number;
@@ -11,6 +12,10 @@ interface Product {
   description: string;
   price: number;
   category: string;
+  discountPercentage: number;
+  rating: number;
+  stock: number;
+  images: string[];
 }
 
 export default function Products() {
@@ -57,6 +62,18 @@ export default function Products() {
                 Category: {product.category}
               </p>
               <p className="text-lg font-bold mb-3">${product.price}</p>
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {product.images?.map((image, index) => (
+                  <Image
+                    key={index}
+                    src={image}
+                    alt={product.title}
+                    className="object-cover rounded"
+                    width={200}
+                    height={200}
+                  />
+                ))}
+              </div>
               <Link
                 href={`/products/${product.id}`}
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"

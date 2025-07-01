@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-
+import Image from 'next/image';
 interface Props {
   params: Promise<{ id: string }>;
 }
@@ -11,6 +11,10 @@ interface Product {
   description: string;
   price: number;
   category?: string;
+  discountPercentage: number;
+  rating: number;
+  stock: number;
+  images: string[];
 }
 
 export const generateMetadata = async ({ params }: Props) => {
@@ -52,12 +56,14 @@ export default async function ProductDetails({ params }: Props) {
         <p className="text-sm text-gray-500 mb-2">Category: {product.category}</p>
       )}
       <p className="text-lg font-bold text-blue-600">${product.price}</p>
-       <Link
-              href={`/cart/${product.id}`}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-              Add To Cart
-            </Link>
+      <div className="mt-4">
+        <h2 className="text-2xl font-bold mb-2">Images</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {product.images.map((image, index) => (
+            <Image key={index} src={image} alt={product.title} width={500} height={500} className="object-cover rounded" />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
