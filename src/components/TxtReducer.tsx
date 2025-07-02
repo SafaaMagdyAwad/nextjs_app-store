@@ -8,7 +8,12 @@ type TextReducerProps = {
 
 export default function TextReducer({ children, limit = 100 }: TextReducerProps) {
   const [expanded, setExpanded] = useState(false);
-  const text = typeof children === "string" ? children : "";
+
+  const text = typeof children === "string"
+    ? children
+    : typeof children === "number"
+    ? children.toString()
+    : "";
 
   const isLong = text.length > limit;
   const displayedText = expanded || !isLong ? text : text.slice(0, limit) + "...";

@@ -1,8 +1,11 @@
-import Link from 'next/link';
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+
 interface Props {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 interface Product {
@@ -17,36 +20,47 @@ interface Product {
   images: string[];
 }
 
-export const generateMetadata = async ({ params }: Props) => {
-  const { id } = await params;
-  const productId = parseInt(id);
+export default function ProductDetails({ params }: Props) {
+  const [product, setProduct] = useState<Product | null>(null);
 
-  if (isNaN(productId)) {
-    return {
-      title: 'Product Not Found',
-      description: 'The product you are looking for does not exist.',
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const res = await fetch(`https://dummyjson.com/products/${params.id}`);
+      const data = await res.json();
+      setProduct(data);
     };
-  }
 
-  const res = await fetch(`https://dummyjson.com/products/${productId}`, {
-    next: { revalidate: 10 }, 
-  });
-  const product: Product = await res.json();
+    fetchProduct();
+  }, [params.id]);
 
-  return {
-    title: product.title,
-    description: product.description,
+  const addToCart = async () => {
+    try {
+      const cartRes = await fetch('https://dummyjson.com/carts/1');
+      const cartData = await cartRes.json();
+      console.log('Cart before adding:', cartData);
+
+      // 2. Add product to cart
+      const res = await fetch('https://dummyjson.com/carts/1', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: 1,
+          products: [{ id: Number(params.id), quantity: 1 }],
+        }),
+      });
+
+      const result = await res.json();
+      console.log('Product added:', result);
+      alert('Product added to cart!');
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Failed to add product to cart.');
+    }
   };
-};
 
-export default async function ProductDetails({ params }: Props) {
-  const { id } = await params;
-  const productId = parseInt(id);
-
-  const res = await fetch(`https://dummyjson.com/products/${productId}`, {
-    next: { revalidate: 10 },
-  });
-  const product: Product = await res.json();
+  if (!product) return <div className="text-center mt-10">Loading...</div>;
 
   return (
     <div className="p-10 max-w-xl mx-auto">
@@ -60,9 +74,22 @@ export default async function ProductDetails({ params }: Props) {
         <h2 className="text-2xl font-bold mb-2">Images</h2>
         <div className="grid grid-cols-2 gap-4">
           {product.images.map((image, index) => (
-            <Image key={index} src={image} alt={product.title} width={500} height={500} className="object-cover rounded" />
+            <Image
+              key={index}
+              src={image}
+              alt={product.title}
+              width={500}
+              height={500}
+              className="object-cover rounded"
+            />
           ))}
         </div>
+        <button
+          onClick={addToCart}
+          className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Add to Cart
+        </button>
       </div>
     </div>
   );
