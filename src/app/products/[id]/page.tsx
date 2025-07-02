@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
 interface Props {
   params: { id: string };
@@ -22,16 +23,17 @@ interface Product {
 
 export default function ProductDetails({ params }: Props) {
   const [product, setProduct] = useState<Product | null>(null);
+  const { id } = useParams(); 
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const res = await fetch(`https://dummyjson.com/products/${params.id}`);
+      const res = await fetch(`https://dummyjson.com/products/${id}`);
       const data = await res.json();
       setProduct(data);
     };
 
     fetchProduct();
-  }, [params.id]);
+  }, [id]);
 
   const addToCart = async () => {
     try {
@@ -47,7 +49,7 @@ export default function ProductDetails({ params }: Props) {
         },
         body: JSON.stringify({
           userId: 1,
-          products: [{ id: Number(params.id), quantity: 1 }],
+          products: [{ id: Number(id), quantity: 1 }],
         }),
       });
 

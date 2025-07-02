@@ -34,9 +34,9 @@ export default function CheckoutPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          discountedTotal: order.discountedTotal,
           totalProducts: order.totalProducts,
           totalQuantity: order.totalQuantity,
+          discountedTotal: order.discountedTotal,
         }),
       });
 
@@ -47,7 +47,7 @@ export default function CheckoutPage() {
       const result = await response.json();
       console.log('Order added to history:', result);
       alert('Order successfully placed!');
-      router.push('/payment'); // التنقل لصفحة الدفع
+      router.push('/orderHistory'); 
     } catch (error) {
       console.error('Error adding order to history:', error);
       alert('Failed to place order.');
